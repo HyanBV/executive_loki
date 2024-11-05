@@ -31,7 +31,7 @@ formulario.onsubmit = function(event) {
     nombreField.classList.remove("error");
   }
 
-  if ( edad < 18 || edad > 20 || isNaN(edad)) {
+  if ( edad < 18 || edad > 120 || isNaN(edad)) {
     edadField.classList.add("error");
   } else {
     edadField.classList.remove("error");
