@@ -1,97 +1,116 @@
-var formulario = document.querySelector("#form")
+/* ------------------------------------------------------------
 
-formulario.onsubmit = function(e) {
+                      SECOND EXERCIES, REVIEWED
 
-  e.prevent();
+--------------------------------------------------------------- */ 
+
+
+// Changed all "var"s to "let"s.
+let formulario = document.querySelector(".formulario"); // Fixed query type, from id to class.
+
+// Form submission handler; changed the "e" for an "event"; Optional change, but cleaner POV.
+formulario.onsubmit = function(event) {
+
+  // Renamed variables to facilitate reading and debugging.
+  event.preventDefault();
   
-  var n = formulario.elements[0]
-  var e = formulario.elements[1]
-  var na = formulario.elements[2]
+  let nombreField = formulario.elements[0];
+  let edadField = formulario.elements[1];
+  let nacionalidadField = formulario.elements[2];
 
-  var nombre = n.value
-  var edad = e.value
+  let nombre = nombreField.value
+  let edad = parseInt(edadField.value);
 
-  var i = na.selectedIndex
-  var nacionalidad = na.options[i].value
-  console.log(nombre, edad)
-  console.log(nacionalidad)
+  let nacionalidadIndex = nacionalidadField.selectedIndex;
+  let nacionalidad = nacionalidadField.options[nacionalidadIndex].value;
 
+  // Validate name & age
   if (nombre.length === 0) {
-    n.classList.add("error")
-  }
-  if (edad < 18 || edad > 120) {
-    e.classList.add("error")
+    nombreField.classList.add("error");
+  } else {
+    nombreField.classList.remove("error");
   }
 
-if (nombre.length > 0 
-  && (edad > 18 
-    && edad < 120) ) {
-  agregarInvitado(nombre, edad, nacionalidad)
+  if ( edad < 18 || edad > 20 || isNaN(edad)) {
+    edadField.classList.add("error");
+  } else {
+    edadField.classList.remove("error");
   }
-}
 
-var botonBorrar = document.createElement("button")
-botonBorrar.textContent = "Eliminar invitado"
-botonBorrar.id = "boton-borrar"
-var corteLinea = document.createElement("br")
-document.body.appendChild(corteLinea)
-document.body.appendChild(botonBorrar);
+  // If valid, add the guest.
+  if (nombre.length > 0 && edad >= 18 && edad <= 120) {
+    agregarInvitado(nombre, edad, nacionalidad);
+  }
+};
 
+  let botonBorrar = document.createElement("button");
+  botonBorrar.textContent = "Eliminar invitado";
+  botonBorrar.id = "boton-borrar";
+
+
+// Deleted unnecessary dual submission button.
+
+
+// Swapped functions for a switch case.
 function agregarInvitado(nombre, edad, nacionalidad) {
 
-  if (nacionalidad === "ar") {
-    nacionalidad = "Argentina"
+  switch (nacionalidad) {
+      case "ar":
+        nacionalidad = "Argentina";
+        break;
+      case "mx":
+        nacionalidad = "Mexicana";
+        break;
+      case "vnzl":
+        nacionalidad = "Venezolana";
+        break;
+      case "per":
+        nacionalidad = "Peruana";
+        break;
   }
-  else if (nacionalidad === "mx") {
-    nacionalidad = "Mexicana"
-  }
-  else if (nacionalidad === "vnzl") {
-    nacionalidad = "Venezolana"
-  }
-  else if (nacionalidad === "per") {
-    nacionalidad = "Peruana"
+
+  let lista = document.getElementById("lista-de-invitados");
+  if (!lista) {
+    lista = document.createElement("div");
+    lista.id = "lista-de-invitados";
+    document.body.appendChild(lista);
   }
 
-var lista = document.getElementById("lista-de-invitados")
 
-var elementoLista = document.createElement("div")
-elementoLista.classList.added("elemento-lista")
-lista.appendChild(elementoLista)
+  let elementoLista = document.createElement("div");
+  elementoLista.classList.add("elemento-lista");
+  lista.appendChild(elementoLista);
 
-var spanNombre = document.createElement("span")
-var inputNombre = document.createElement("input")
-var espacio = document.createElement("br")
-spanNombre.textContent = "Nombre: "
-inputNombre.value = nombre 
-elementoLista.appendChild(spanNombre)
-elementoLista.appendChild(inputNombre)
-elementoLista.appendChild(espacio)
+  // Deleted duplicate variables to prevent duality output.
+  function crearElemento(descripcion, valor) {
+    let spanLabel = document.createElement("span");
+    let inputField = document.createElement("input");
+    let lineBreak = document.createElement("br");
 
-function crearElemento(descripcion, valor) {
-var spanNombre = document.createElement("span")
-var inputNombre = document.createElement("input")
-var espacio = document.createElement("br")
-spanNombre.textContent = descripcion + ": "
-inputNombre.value = valor 
-elementoLista.appendChild(spanNombre)
-elementoLista.appendChild(inputNombre)
-elementoLista.appendChild(espacio)
-}
+    spanLabel.textContent = descripcion + ": ";
+    inputField.value = valor;
+    inputField.readOnly = true; // Make input field read-only
 
-crearElemento("Nombre", nombre)
-crearElemento("Edad", edad)
-crearElemento("Nacionalidad", nacionalidad)
-
-
-var botonBorrar = document.createElement("button")
-botonBorrar.textContent = "Eliminar invitado"
-botonBorrar.id = "boton-borrar"
-var corteLinea = document.createElement("br")
-elementoLista.appendChild(corteLinea)
-elementoLista.appendChild(botonBorrar);
-
- botonBorrar.onclick = function() {
-// this.parentNode.style.display = 'none';
-botonBorrar.parentNode.remove()
+    elementoLista.appendChild(spanLabel);
+    elementoLista.appendChild(inputField);
+    elementoLista.appendChild(lineBreak);
   }
+
+  // Create fields for name, age, and nationality
+  crearElemento("Nombre", nombre);
+  crearElemento("Edad", edad);
+  crearElemento("Nacionalidad", nacionalidad);
+
+
+  // Add delete button to guest element
+  let deleteButton = document.createElement("button");
+  deleteButton.textContent = "Eliminar invitado";
+  deleteButton.id = "boton-borrar";
+  elementoLista.appendChild(document.createElement("br"));
+  elementoLista.appendChild(deleteButton);
+
+  // Event handler for deleting the guest element
+  deleteButton.onclick = function() {
+    elementoLista.remove();
+  };
 }
